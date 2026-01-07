@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head><link rel="icon" href="data:,">
-
+<head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>コメダ1000円ガチャ（時間帯対応）</title>
-
-<link rel="manifest" href="manifest.json">
+<link rel="icon" href="data:,">
 <meta name="theme-color" content="#7b3f00">
 <style>
   body {
@@ -45,7 +43,6 @@
   }
 </style>
 </head>
-
 <body>
 
 <h1>☕ コメダ 予算ガチャ（時間帯対応）</h1>
@@ -65,27 +62,31 @@
       <option value="1500">1500円</option>
     </select>
   </div>
-<div id="timeSelect">
-  <label>
-    <input type="radio" name="period" value="morning" checked>
-    朝
-  </label>
-  <label>
-    <input type="radio" name="period" value="lunch">
-    昼
-  </label>
-  <label>
-    <input type="radio" name="period" value="night">
-    夜
-  </label>
-</div>
+
+  <div id="timeSelect">
+    <label>
+      <input type="radio" name="period" value="morning" checked> 朝
+    </label>
+    <label>
+      <input type="radio" name="period" value="lunch"> 昼
+    </label>
+    <label>
+      <input type="radio" name="period" value="night"> 夜
+    </label>
+  </div>
 
   <button onclick="runGacha()">🎲 ガチャを回す</button>
 
   <div id="result"></div>
-
 </div>
+
+<!-- 注意書き -->
+<p style="font-size:12px;color:#666;">
+※ メニュー内容・価格は代表例です。実際の内容・価格は店舗により異なります。
+</p>
+
 <script>
+// 時間帯ごとのメニュー一覧
 const menus = {
   morning: [
     { name: "モーニング（トースト＋選べるセット）", price: 0 },
@@ -138,10 +139,10 @@ const menus = {
   ]
 };
 
+// ガチャを回す関数
 function runGacha() {
   const people = Number(document.getElementById("people").value);
   const budget = Number(document.getElementById("budget").value);
-
   const period = document.querySelector('input[name="period"]:checked').value;
 
   const menu = menus[period];
@@ -155,6 +156,7 @@ function runGacha() {
     return total + item.price <= budget;
   }
 
+  // 人数分選ぶ
   for (let i = 0; i < people; i++) {
     const candidates = menu.filter(canAdd);
     if (candidates.length === 0) break;
@@ -164,6 +166,7 @@ function runGacha() {
     if (item.price === 0) usedZero = true;
   }
 
+  // 残り予算で追加
   let guard = 0;
   while (guard < 100) {
     const candidates = menu.filter(canAdd);
@@ -192,6 +195,7 @@ function runGacha() {
   `;
 }
 
+// シェア用関数
 function shareResult() {
   if (navigator.share) {
     navigator.share({ text: window.shareText });
@@ -201,7 +205,5 @@ function shareResult() {
   }
 }
 </script>
-
-<p style="font-size:12px;color:#666;">
-※ メニュー内容・価格は代表例です。実際の内容・価格は店舗により異なります。
-</p>
+</body>
+</html>
