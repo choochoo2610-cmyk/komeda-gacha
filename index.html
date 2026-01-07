@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head><link rel="icon" href="data:,">
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>コメダ1000円ガチャ（時間帯対応）</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#7b3f00">
+<style>
+  body {
+    font-family: sans-serif;
+    text-align: center;
+    background: #fff7e6;
+    margin: 0;
+    padding: 20px;
+  }
+  .card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 15px;
+    margin: 10px auto;
+    max-width: 460px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+  }
+  select, button {
+    padding: 10px;
+    margin: 6px;
+    font-size: 16px;
+  }
+  button {
+    background: #7b3f00;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  #result-list {
+    text-align: left;
+    margin-top: 12px;
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>☕ コメダ 予算ガチャ（時間帯対応）</h1>
+
+<div class="card">
+  <div>
+    人数：
+    <select id="people">
+      <option value="1">1人</option>
+      <option value="2" selected>2人</option>
+    </select>
+    予算：
+    <select id="budget">
+      <option value="800">800円</option>
+      <option value="1000" selected>1000円</option>
+      <option value="1200">1200円</option>
+      <option value="1500">1500円</option>
+    </select>
+  </div>
+<div id="timeSelect">
+  <label>
+    <input type="radio" name="period" value="morning" checked>
+    朝
+  </label>
+  <label>
+    <input type="radio" name="period" value="lunch">
+    昼
+  </label>
+  <label>
+    <input type="radio" name="period" value="night">
+    夜
+  </label>
+</div>
+
+  <button onclick="runGacha()">🎲 ガチャを回す</button>
+
+  <div id="result"></div>
+
+</div>
+<script>
+const menus = {
+ const menus = {
+  morning: [
+    { name: "モーニング（トースト＋選べるセット）", price: 0 },
+
+    { name: "コメダブレンド", price: 460 },
+    { name: "アメリカン", price: 460 },
+    { name: "アイスコーヒー", price: 480 },
+    { name: "アイスオーレ", price: 520 },
+    { name: "カフェオーレ", price: 520 },
+    { name: "ミルクコーヒー", price: 540 },
+    { name: "ウインナーコーヒー", price: 580 },
+
+    { name: "ミルク", price: 480 },
+    { name: "ココア", price: 560 },
+    { name: "アイスココア", price: 580 },
+
+    { name: "紅茶", price: 460 },
+    { name: "アイスティー", price: 480 },
+    { name: "ミルクティー", price: 520 }
+  ],
+
+   lunch: [
+    { name: "ミックスサンド", price: 680 },
+    { name: "ハムサンド", price: 620 },
+    { name: "ポテサラサンド", price: 700 },
+    { name: "たっぷりたまごのピザトースト", price: 720 },
+    { name: "ピザトースト", price: 620 },
+    { name: "小倉トースト", price: 600 },
+
+    { name: "ナポリタン", price: 770 },
+    { name: "ミートソース", price: 770 },
+    { name: "ビーフシチュー", price: 950 },
+
+    { name: "グラタン", price: 820 },
+    { name: "ドリア", price: 820 },
+
+    { name: "コメチキ（2個）", price: 580 },
+    { name: "フライドポテト", price: 520 },
+    { name: "サラダ", price: 480 },
+
+    { name: "ホットドッグ", price: 520 },
+    { name: "あみ焼きチキンホットサンド", price: 880 }
+  ],
+
+   night: [
+    { name: "シロノワール", price: 730 },
+    { name: "ミニシロノワール", price: 530 },
+    { name: "クロネージュ", price: 610 },
+    { name: "ソフトクリーム", price: 480 },
+
+    { name: "小倉あん", price: 280 },
+    { name: "小倉トースト", price: 600 },
+
+    { name: "みそカツパン", price: 880 },
+    { name: "エビカツパン", price: 880 },
+
+    { name: "たっぷりブレンド", price: 560 },
+    { name: "たっぷりアイスコーヒー", price: 580 },
+    { name: "カフェオーレ", price: 520 },
+
+    { name: "コメチキ（2個）", price: 580 },
+    { name: "フライドポテト", price: 520 }
+  ]
+};
+
+function runGacha() {
+  const people = Number(document.getElementById("people").value);
+  const budget = Number(document.getElementById("budget").value);
+
+  const period = document.querySelector(
+    'input[name="period"]:checked'
+  ).value;
+
+  const menu = menus[period];
+
+  let total = 0;
+  let result = [];
+  let usedZero = false;
+
+  function canAdd(item) {
+    if (item.price === 0 && usedZero) return false;
+    return total + item.price <= budget;
+  }
+
+  for (let i = 0; i < people; i++) {
+    const candidates = menu.filter(canAdd);
+    if (candidates.length === 0) break;
+    const item = candidates[Math.floor(Math.random() * candidates.length)];
+    result.push(item);
+    total += item.price;
+    if (item.price === 0) usedZero = true;
+  }
+
+  let guard = 0;
+  while (guard < 100) {
+    const candidates = menu.filter(canAdd);
+    if (candidates.length === 0) break;
+    const item = candidates[Math.floor(Math.random() * candidates.length)];
+    result.push(item);
+    total += item.price;
+    if (item.price === 0) usedZero = true;
+    guard++;
+  }
+
+  const periodLabel =
+    period === "morning" ? "朝" :
+    period === "lunch" ? "昼" : "夜";
+
+  const shareText =
+    `【コメダ1000円ガチャ】\n${periodLabel}ガチャ\n` +
+    result.map(r => `・${r.name}（¥${r.price}）`).join("\n") +
+    `\n合計 ¥${total}\n残金 ¥${budget - total}\n#コメダガチャ`;
+
+  window.shareText = shareText;
+
+  document.getElementById("result").innerHTML = `
+    <h3>${periodLabel}ガチャ結果</h3>
+    <ul>${result.map(r => `<li>${r.name}（¥${r.price}）</li>`).join("")}</ul>
+    <p>合計 ¥${total}（残金 ¥${budget - total}）</p>
+    <button onclick="shareResult()">SNSでシェア</button>
+  `;
+}
+
+function shareResult() {
+  if (navigator.share) {
+    navigator.share({ text: window.shareText });
+  } else {
+    navigator.clipboard.writeText(window.shareText);
+    alert("シェア文をコピーしました");
+  }
+}
+  <p style="font-size:12px;color:#666;">
+※ メニュー内容・価格は代表例です。実際の内容・価格は店舗により異なります。
+</p>
+
+</script>
+
+</body>
+</html>
